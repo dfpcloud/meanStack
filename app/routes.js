@@ -38,12 +38,12 @@ module.exports = function (app) {
         // nothing after res.send(err) will execute
         if (true) {
             span.setTag(opentracing.Tags.ERROR, true);
-            span.log({ 'event': 'error', 'error.object': "err", 'message': "err.message", 'stack': "err.stack" });
+            span.logEvent({ 'event': 'error', 'error.object': "err", 'message': "err.message", 'stack': "err.stack" });
             span.finish();
             res.send("err");
         }
         span.setTag(opentracing.Tags.SAMPLING_PRIORITY, 1);
-        span.log({ 'event': 'data_received', 'chunk_length': "done" });
+        span.logEvent({ 'event': 'data_received', 'chunk_length': "done" });
         span.finish();
         res.json("hello"); // return all nerds in JSON format
         // });
@@ -56,7 +56,7 @@ module.exports = function (app) {
     // route to handle all angular requests
     app.get('*', function (req, res) {
         span.setTag(opentracing.Tags.SAMPLING_PRIORITY, 1);
-        span.log({ 'event': 'allApi', 'chunk_length': "ghfjhklghfgfg" });
+        span.logEvent({ 'event': 'allApi', 'chunk_length': "ghfjhklghfgfg" });
         span.finish();
         res.sendfile('./public/views/index.html'); // load our public/index.html file
     });
