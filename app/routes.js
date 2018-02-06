@@ -38,7 +38,7 @@ module.exports = function (app) {
         // nothing after res.send(err) will execute
         if (true) {
             span.setTag(opentracing.Tags.ERROR, true);
-            span.log({ 'event': 'error', 'error.object': err, 'message': err.message, 'stack': err.stack });
+            span.log({ 'event': 'error', 'error.object': "err", 'message': "err.message", 'stack': "err.stack" });
             span.finish();
             res.send(err);
         }
