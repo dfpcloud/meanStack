@@ -40,7 +40,7 @@ module.exports = function (app) {
             span.setTag(opentracing.Tags.ERROR, true);
             span.log({ 'event': 'error', 'error.object': "err", 'message': "err.message", 'stack': "err.stack" });
             span.finish();
-            res.send(err);
+            res.send("err");
         }
         span.setTag(opentracing.Tags.SAMPLING_PRIORITY, 1);
         span.log({ 'event': 'data_received', 'chunk_length': "done" });
