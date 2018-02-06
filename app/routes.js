@@ -33,20 +33,20 @@ module.exports = function (app) {
     // sample api route
     app.get('/api/nerds', function (req, res) {
         // use mongoose to get all nerds in the database
-        Nerd.find(function (err, nerds) {
+        // Nerd.find(function (err, nerds) {
 
-            // if there is an error retrieving, send the error. 
-            // nothing after res.send(err) will execute
-            if (err) {
-                span.setTag(opentracing.Tags.ERROR, true);
-                span.log({ 'event': 'error', 'error.object': err, 'message': err.message, 'stack': err.stack });
-                span.finish();
-                res.send(err);
-            }
-            span.log({ 'event': 'data_received', 'chunk_length': nerds.length });
+        // if there is an error retrieving, send the error. 
+        // nothing after res.send(err) will execute
+        if (false) {
+            span.setTag(opentracing.Tags.ERROR, true);
+            span.log({ 'event': 'error', 'error.object': err, 'message': err.message, 'stack': err.stack });
             span.finish();
-            res.json(nerds); // return all nerds in JSON format
-        });
+            res.send(err);
+        }
+        span.log({ 'event': 'data_received', 'chunk_length': req.length });
+        span.finish();
+        res.json("hello"); // return all nerds in JSON format
+        // });
     });
 
     // route to handle creating goes here (app.post)
@@ -55,6 +55,8 @@ module.exports = function (app) {
     // frontend routes =========================================================
     // route to handle all angular requests
     app.get('*', function (req, res) {
+        span.log({ 'event': 'allApi', 'chunk_length': req.length });
+        span.finish();
         res.sendfile('./public/views/index.html'); // load our public/index.html file
     });
 
