@@ -2,6 +2,27 @@
 
 // grab the nerd model we just created
 var Nerd = require('./models/nerd');
+var opentracing = require("opentracing");
+var initTracer = require('jaeger-client').initTracer;
+
+var jaegerConfig = {
+    'serviceName': 'example-svc',
+    'reporter': {
+        logSpans: false,
+        flushIntervalMs: 10,
+    }
+};
+var options = {
+    'tags': {
+        'my-awesome-service.version': '1.1.2'
+    },
+    // 'metrics': metrics,
+    // 'logger': L
+};
+
+const tracer = initTracer(jaegerConfig, options);
+span = tracer.startSpan("http");
+span.setTag(opentracing.Tags.SAMPLING_PRIORITY, 1);
 
 module.exports = function (app) {
 
@@ -16,9 +37,14 @@ module.exports = function (app) {
 
             // if there is an error retrieving, send the error. 
             // nothing after res.send(err) will execute
-            if (err)
+            if (err) {
+                span.setTag(opentracing.Tags.ERROR, true);
+                span.log({ 'event': 'error', 'error.object': err, 'message': err.message, 'stack': err.stack });
+                span.finish();
                 res.send(err);
-
+            }
+            span.log({ 'event': 'data_received', 'chunk_length': nerds.length });
+            span.finish();
             res.json(nerds); // return all nerds in JSON format
         });
     });
